@@ -9,16 +9,20 @@ def uses():
     exit()
 
 
-def main():
+def soupGet(tag):
 
-    game = ""
+    soup = BeautifulSoup(requests.get(sys.argv[1]).text,"html.parser")
+    return soup.findAll(tag)
+
+
+def main():
 
     if(len(sys.argv) != 2):
         uses()
     
-    soup = BeautifulSoup(requests.get(sys.argv[1]).text,"html.parser")
+    xbx = soupGet("picture")
     game = ' '.join(sys.argv[1].split("=")[1].split("+"))
-  
+      
 
 
 main()
