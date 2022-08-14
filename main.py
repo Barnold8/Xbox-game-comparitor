@@ -3,6 +3,9 @@ import sys
 from bs4 import BeautifulSoup
 
 
+#Note: program only works with the preview of a search on xbox games. Using "see all" may provide
+#undefined behaviour
+
 class XBX_GME: # a struct for compiling game items from the xbox store
 
     def __init__(self):
@@ -28,6 +31,21 @@ def uses():
     print("USE: main.py [URL]")
     print("Example: main.py https://www.xbox.com/en-gb/Search?q=forza+horizon+5")
     exit()
+
+
+
+def linkMaker(site,game): # site will be type int to determine what site we get games from
+                          # function returns type str, the link needed to process games
+    # 0 = cdkeys
+    # 1 = eneba
+    # 2 = G2A
+
+    #https://www.cdkeys.com/catalogsearch/result/?q=house%20flipper&platforms=Xbox%20Live
+    if site == 0:
+        x = "https://www.cdkeys.com/catalogsearch/result/?q={}&platforms=Xbox%20Live".format(game.replace(" ","%20"))
+        print(x)
+
+
 
 def soupGet(tag_,class_):
 
@@ -64,7 +82,6 @@ def main():
         uses()                 
 
     xbox_games = xbx_games()
-    for elem in xbox_games:
-        elem.printDAT()
+    linkMaker(0,"Hello neighbour")
 
 main()
