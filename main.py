@@ -61,9 +61,9 @@ def linkMaker(site,game): # site will be type int to determine what site we get 
     # 2 = G2A
 
     #https://www.cdkeys.com/catalogsearch/result/?q=house%20flipper&platforms=Xbox%20Live
-    if site == 0:
+    if site == 0: 
         return "https://www.cdkeys.com/catalogsearch/result/?q={}&platforms=Xbox%20Live".format(game.replace(" ","%20"))
-     
+    
     #https://www.eneba.com/gb/store/xbox-games?page=1&platforms[]=XBOX&text=mortal%20shell&typ&types[]=game
     elif site == 1:
         return "https://www.eneba.com/gb/store/xbox-games?page=1&platforms[]=XBOX&text={}&typ&types[]=game".format(game.replace(" ","%20"))
@@ -74,11 +74,15 @@ def linkMaker(site,game): # site will be type int to determine what site we get 
 
 
 def soupGet(tag_,class_,link_ = None):
-
+    
+    headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36'}
+    
     if link_ == None:
-        soup = BeautifulSoup(requests.get(sys.argv[1]).text,"html.parser")
+        cookies = requests.head(sys.argv[1])
+        soup = BeautifulSoup(requests.get(sys.argv[1],cookies=cookies,headers=headers).text,"html.parser")
     else:
-        soup = BeautifulSoup(requests.get(link_).text,"html.parser")
+        cookies = requests.head(link_)
+        soup = BeautifulSoup(requests.get(link_,cookies=cookies,headers=headers).text,"html.parser")
 
     if class_ == None:
         return soup.findAll(tag_)
@@ -130,26 +134,27 @@ def enebaGames():
                     eneba.append(a)
     return eneba
 
-def cdKeys_games():
+def cdKeys_games(): # Current bug: returns home page instead of query
 
     games = []
 
     chars = "$ £ €".split(' ')
     
     game = ' '.join(sys.argv[1].split("=")[1].split("+")) 
-    
+ 
     word_count = len(game.split(" "))
     
     x = soupGet("div",None,linkMaker(0,game))
-    
-    
+    #for elem in x:
+     #   print(elem.text)
+      #  input("Press Enter")
+
     return
 
-   
+def mon_conv(price):
 
-def g2a_games():
-    
     pass
+
 
 def main():
 
@@ -159,8 +164,6 @@ def main():
     xbox_games = xbx_games()
     cd_keys = cdKeys_games()
     eneba_games = enebaGames()
-    g2a = g2a_games()
-    for elem in eneba_games:
-        elem.printDAT()
+  
 
 main()
