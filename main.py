@@ -14,8 +14,8 @@ class XBX_GME: # a struct for compiling game items from the xbox store
     def __init__(self):
 
         self.name = ""
-        self.rating = 0.0
-        self.price = 0.0
+        self.rating = ""
+        self.price = ""
    
     def setData(self,arr):
         #print(arr)
@@ -69,9 +69,7 @@ def linkMaker(site,game): # site will be type int to determine what site we get 
         return "https://www.eneba.com/gb/store/xbox-games?page=1&platforms[]=XBOX&text={}&typ&types[]=game".format(game.replace(" ","%20"))
 
     #https://www.g2a.com/category/gaming-c1?f[drm][0]=273&query=mortal%20shell
-    elif site == 2:
-        return "https://www.g2a.com/category/gaming-c1?f[drm][0]=273&query={}".format(game.replace(" ","%20"))
-
+    
 
 def soupGet(tag_,class_,link_ = None):
     
@@ -151,10 +149,34 @@ def cdKeys_games(): # Current bug: returns home page instead of query
 
     return
 
-def mon_conv(price):
+def mon_conv(price): 
 
-    pass
+    sign = price[0]
+    mon = float(price.split(sign)[1])
+    
+    eur = 1.18554
+    doll = 1.19950  
 
+    #print(type(mon))
+
+    if sign == "$":
+        return  "£" + "{0:.2f}".format((mon / doll))
+    elif sign == "€":
+        return "£"+"{0:.2f}".format((mon / eur))
+    else:
+        return
+
+def lowest(arr1,arr2): # if 0, arr1 has lower price, else arr2 has lowest
+
+    for elem in arr1:
+        print(elem.price)
+        lowest =  float(elem.price.split("£")[1])
+    print("="*40)
+    for elem in arr2:
+        print(elem.price)
+        if float(elem.price.split("£")[1]) < lowest:
+            return 1
+    return 0
 
 def main():
 
@@ -162,8 +184,12 @@ def main():
         uses()                 
 
     xbox_games = xbx_games()
-    cd_keys = cdKeys_games()
+   # cd_keys = cdKeys_games()
     eneba_games = enebaGames()
-  
+    
+    for elem in eneba_games:
+        elem.price = mon_conv(elem.price)
+    print(lowest(xbox_games,eneba_games))
+
 
 main()
